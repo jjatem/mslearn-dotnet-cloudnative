@@ -9,10 +9,12 @@ spec:
     metadata:
       labels:
         app: storefrontend
+      annotations:
+        linkerd.io/inject: enabled
     spec:
       containers:
       - name: storefrontend
-        image: [YOUR DOCKER USER NAME]/storeimage:latest
+        image: jjatem/storeimage:latest
         ports:
         - containerPort: 80
         env:
@@ -21,7 +23,7 @@ spec:
         - name: ProductEndpoint
           value: http://productsbackend
         - name: ImagePrefix
-          value: http://localhost/images
+          value: https://ideal-orbit-695vxq5pwrq3rrx7-32001.app.github.dev/images
   selector:
     matchLabels:
       app: storefrontend

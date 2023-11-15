@@ -9,10 +9,12 @@ spec:
     metadata:
       labels:
         app: productsbackend
+      annotations:
+        linkerd.io/inject: enabled
     spec:
       containers:
       - name: productsbackend
-        image: [YOUR DOCKER USER NAME]/productservice:latest
+        image: jjatem/productservice:latest
         ports:
         - containerPort: 80
         env:
@@ -34,3 +36,20 @@ spec:
     nodePort: 32001
   selector:
     app: productsbackend
+---
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: backend
+  namespace: default
+spec:
+  routes:
+  - condition:
+      method: GET
+      pathRegex: /api/Product
+    name: GET /v1/products
+    isRetryable: true
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 120s
